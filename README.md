@@ -1,19 +1,20 @@
 # YOLO Lotto Server
 
-## Quickstart (Docker)
-1) Start Postgres
+## สิ่งที่ต้องมี 
+ไฟล์ `.env`
+## วิธีรัน (Docker)
+1) Start Postgres (เริ่มจาก cd เข้าไปใน โฟลเดอร์ repo)
 ```
-docker run -d --name pg-lotto -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=adminlotto -e POSTGRES_DB=lotto_sub_number -p 5432:5432 postgres:15
+docker compose build  # ครั้งแรก หรือเมื่อแก้โค้ด/requirements
 ```
 
-2) Build + run OCR server (เริ่มจาก cd เข้าไปใน โฟลเดอร์ repo)
+2) Build + run OCR server 
 ```
-docker build -t yolo-server2 .
-docker run -d --name yolo-server2 -p 8765:8765 --env-file .env -e YOLO_DEVICE=cpu yolo-server2
+docker compose up -d
 ```
 
 3) Verify containers
-Expect two containers running:
+Expect 2 containers running:
 ```
 docker ps
 CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS          PORTS                    NAMES
@@ -22,7 +23,6 @@ CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS  
 ```
 
 4) Prepare database (e.g., via DBeaver)
-- Connect to Postgres using credentials from `.env` (ส่งให้ในไลน์)
 - Create table:
 ```
 CREATE TABLE IF NOT EXISTS lotto_results (
@@ -44,4 +44,5 @@ python client.py
 
 ## Notes
 - `.env` is ignored from Git
-- Set `YOLO_DEVICE=cpu` to force CPU inference;
+- ถ้าอยากบังคับใช้ CPU ให้ตั้ง `YOLO_DEVICE=cpu` ใน `.env`
+
