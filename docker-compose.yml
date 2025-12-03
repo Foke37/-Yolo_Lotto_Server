@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  pg-lotto:
+    image: postgres:15
+    container_name: pg-lotto
+    environment:
+      POSTGRES_USER: ${DB_USER:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-adminlotto}
+      POSTGRES_DB: ${DB_NAME:-lotto_sub_number}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-admin}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  yolo-server:
+    build: .
+    container_name: yolo-server2
+    env_file:
+      - .env
+    environment:
+      DB_HOST: pg-lotto
+      YOLO_DEVICE: ${YOLO_DEVICE:-cpu}
+    depends_on:
+      pg-lotto:
+        condition: service_healthy
+    ports:
+      - "8765:8765"
+    restart: always
+
+volumes:
+  pgdata:
